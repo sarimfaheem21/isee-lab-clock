@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NYC Live Clock - ISEE Research Labs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #3A1854;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .clock-container {
+            text-align: center;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #5B2C6F 0%, #7B3F91 100%);
+            border: 2px solid #9B7BB3;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(155, 123, 179, 0.4);
+        }
+        
+        .location {
+            font-size: 11px;
+            color: #E0D4EC;
+            letter-spacing: 1.2px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        
+        .time {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFFFFF;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .date {
+            font-size: 13px;
+            color: #E0D4EC;
+            margin-top: 6px;
+            font-weight: 400;
+        }
+        
+        .timezone {
+            font-size: 10px;
+            color: #9B7BB3;
+            margin-top: 4px;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+        }
+        
+        .pulse {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            margin-left: 6px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                box-shadow: 0 0 4px #FFFFFF;
+            }
+            50% {
+                opacity: 0.4;
+                box-shadow: 0 0 10px #FFFFFF;
+            }
+        }
+        
+        /* Compact version for embedding */
+        @media (max-width: 600px) {
+            .time {
+                font-size: 28px;
+            }
+            .date {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <div class="location">NEW YORK, NY<span class="pulse"></span></div>
+        <div class="time" id="clock">--:--:--</div>
+        <div class="date" id="date">Loading...</div>
+        <div class="timezone">EST/EDT (UTC-5/-4)</div>
+    </div>
+    <script>
+        function updateClock() {
+            // Get current time in NYC timezone
+            const now = new Date();
+            
+            // Use toLocaleString with NYC timezone
+            const nycTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+            
+            // Format time components
+            const hours = String(nycTime.getHours()).padStart(2, '0');
+            const minutes = String(nycTime.getMinutes()).padStart(2, '0');
+            const seconds = String(nycTime.getSeconds()).padStart(2, '0');
+            
+            // Day and month names
+            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            // Get date components
+            const dayName = dayNames[nycTime.getDay()];
+            const day = nycTime.getDate();
+            const month = monthNames[nycTime.getMonth()];
+            const year = nycTime.getFullYear();
+            
+            // Update DOM
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('date').textContent = `${dayName}, ${day} ${month} ${year}`;
+        }
+        
+        // Initialize clock
+        updateClock();
+        
+        // Update every second
+        setInterval(updateClock, 1000);
+        
+        // Prevent right-click and text selection for cleaner embed
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('selectstart', e => e.preventDefault());
+    </script>
+</body>
+</html>
